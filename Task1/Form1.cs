@@ -32,30 +32,45 @@ namespace Task1
         int a = -3;//интервал по Х; a и b должно нацело делится на dx:
         int b = 3;
         double dx = 0.5;
-        int fmin = -3;//интервал по Y; fmin и fmax должно нацело делится на dy:
-        int fmax = 3;
+        int fmin = -5;//интервал по Y; fmin и fmax должно нацело делится на dy:
+        int fmax = 5;
         double dy = 0.5;
-        private double f(double x, double y)
+
+        private double f(double x, double y, int p)
         {
-            return y * Math.Log(y) / (-x);
+            switch(p)
+            {
+                case 1:
+                    return y * Math.Log(y) / (-x);
+                case 2:
+                    return Math.Atan(x * x + y * y);
+                case 3:
+                    return Math.Sin(x + y);
+                default:
+                    return 0;
+            }
         }
 
-        private double[,] Calculate(double x, double y, double xn, double h, double kh, double[,] array)
+        private double[,] Calculate(double x, double y, double xn, double h, double kh, double[,] array, int p)
         {
             double h1 = h * kh;
             double k1, k2, k3, k4;
             int i = 0;
             int j = 0;
-            for (x = x; x < xn; x += h1)
+            for (x = x; x <= xn-h1/2; x += h1)
             {
-                k1 = h1 * f(x, y);
-                k2 = h1 * f(x + h1 / 2, y + k1 / 2);
-                k3 = h1 * f(x + h1 / 2, y + k2 / 2);
-                k4 = h1 * f(x + h1, y + k3);
+                k1 = h1 * f(x, y, p);
+                k2 = h1 * f(x + h1 / 2, y + k1 / 2, p);
+                k3 = h1 * f(x + h1 / 2, y + k2 / 2, p);
+                k4 = h1 * f(x + h1, y + k3, p);
                 y = y + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
                 array[i, j] = x;
                 j = 1;
                 array[i, j] = y;
+                if (dataGridView1.Columns.Count == 3)
+                    dataGridView1.Rows.Add(x, y, h1);
+                else
+                    dataGridView1.Rows.Add(p-1, x, y, h1);
                 i++;
                 j = 0;
             }
@@ -141,6 +156,13 @@ namespace Task1
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
+                    label5.Visible = false;
+                    label6.Visible = false;
+                    label7.Visible = false;
+                    dataGridView1.Rows.Clear();
+                    label1.Text = "y'=y*ln(y)/(-x)";
+                    if (dataGridView1.Columns.Count >= 4)
+                        dataGridView1.Columns.RemoveAt(0);
                     double x = 1;
                     double y = Math.E;
                     double xn = 2.6;
@@ -148,21 +170,86 @@ namespace Task1
                     double kh = 1;
                     int strings =(int) (Math.Abs(xn - x)/(kh*h));
                     double[,] array = new double[strings, 2];
-                    Calculate(x, y, xn, h, kh, array);
+                    Calculate(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.Blue, array);
+                    label2.Text = "h=0.1";
+                    label2.ForeColor = Color.Blue;
                     //отрисовалась линия с шагом h
                     kh = 2;
                     strings = (int)(Math.Abs(xn - x) / (kh * h));
                     array = new double[strings, 2];
-                    Calculate(x, y, xn, h, kh, array);
+                    Calculate(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.Red, array);
+                    label3.Text = "h=0.2";
+                    label3.ForeColor = Color.Red;
                     //отрисовалась линия с шагом 2h
                     kh = 0.5;
                     strings = (int)(Math.Abs(xn - x) / (kh * h));
-                    array = new double[strings+1, 2];
-                    Calculate(x, y, xn, h, kh, array);
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.LightGreen, array);
+                    label4.Text = "h=0.05";
+                    label4.ForeColor = Color.LightGreen;
                     //отрисовалась линия с шагом 0.5h
+                    break;
+                case 1:
+                    label5.Visible = true;
+                    label6.Visible = true;
+                    label7.Visible = true;
+                    dataGridView1.Rows.Clear();
+                    if (dataGridView1.Columns.Count == 3)
+                    {
+                        DataGridViewColumn colFunc = new DataGridViewTextBoxColumn();
+                        colFunc.HeaderText = "Функция";
+                        dataGridView1.Columns.Insert(0, colFunc);
+                    }
+                    label1.Text = "1) y1'=arctg(x^2+y2^2); 2) y2'=in(x+y1)";
+                    x = 0;
+                    y = 1.5;
+                    xn = 2;
+                    h = 0.1;
+                    kh = 1;
+                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 2);
+                    DrawFunc(Color.Blue, array);
+                    label2.Text = "1)h=0.1";
+                    label2.ForeColor = Color.Blue;
+                    //отрисовалась линия первого графика с шагом h
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 3);
+                    DrawFunc(Color.Orange, array);
+                    label5.Text = "2)h=0.1";
+                    label5.ForeColor = Color.Orange;
+                    //отрисовалась линия второго графика с шагом h
+                    kh = 2;
+                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 2);
+                    DrawFunc(Color.Red, array);
+                    label3.Text = "1)h=0.2";
+                    label3.ForeColor = Color.Red;
+                    //отрисовалась линия первого графика с шагом 2h
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 3);
+                    DrawFunc(Color.DarkSlateBlue, array);
+                    label6.Text = "2)h=0.2";
+                    label6.ForeColor = Color.DarkSlateBlue;
+                    //отрисовалась линия второго графика с шагом 2h
+                    kh = 0.5;
+                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 2);
+                    DrawFunc(Color.LightGreen, array);
+                    label4.Text = "2)h=0.05";
+                    label4.ForeColor = Color.LightGreen; ;
+                    //отрисовалась линия первого графика с шагом 0.5h
+                    array = new double[strings, 2];
+                    Calculate(x, y, xn, h, kh, array, 3);
+                    DrawFunc(Color.HotPink, array);
+                    label7.Text = "2)h=0.05";
+                    label7.ForeColor = Color.HotPink;
+                    //отрисовалась линия второго графика с шагом 2h
                     break;
                 case 2:
 
