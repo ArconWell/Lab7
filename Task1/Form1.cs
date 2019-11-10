@@ -33,7 +33,7 @@ namespace Task1
         int b = 3;
         double dx = 0.5;
         int fmin = -3;//интервал по Y; fmin и fmax должно нацело делится на dy:
-        int fmax = 2;//тут какая-то ошибка и при fmin=-3 fmax=2 на графике минимальная координата y -2, а максимальная 3 (т.е. меняются наоборот) 
+        int fmax = 3;//тут какая-то ошибка и при fmin=-3 fmax=2 на графике минимальная координата y -2, а максимальная 3 (т.е. меняются наоборот) 
         double dy = 0.5;
 
         private double f(double x, double y, int p)
@@ -55,9 +55,15 @@ namespace Task1
         {
             double h1 = h * kh;
             double k1, k2, k3, k4;
-            int i = 0;
+            int i = 1;
             int j = 0;
-            for (x = x; x <= xn-h1/2; x += h1)
+            array[0, 0] = x;
+            array[0, 1] = y;
+            if (dataGridView1.Columns.Count == 3)
+                dataGridView1.Rows.Add(x, y, h1);
+            else
+                dataGridView1.Rows.Add(p - 1, x, y, h1);
+            for (x = x+h1; x <= xn-h1/2; x += h1)
             {
                 k1 = h1 * f(x, y, p);
                 k2 = h1 * f(x + h1 / 2, y + k1 / 2, p);
@@ -82,7 +88,7 @@ namespace Task1
             Pen = new Pen(cl, 3);
             double mx = (pictureBox1.Width - 0) / (b - a); //масштаб по Х
             double my = (pictureBox1.Height - 0) / (fmax - fmin); //масштаб по Y
-            for (int i = 1; i < array.GetLength(0); i++)
+            for (int i = 1; i < array.GetLength(0)-1; i++)
             {
                 double x1 = pictureBox1.Width / 2 + array[i-1, 0] * mx;
                 double y1 = pictureBox1.Height / 2 - array[i-1, 1] * my;
@@ -171,7 +177,7 @@ namespace Task1
                     double xn = 2.6;
                     double h = 0.1;
                     double kh = 1;
-                    int strings =(int) (Math.Abs(xn - x)/(kh*h));
+                    int strings =(int) (Math.Abs(xn - x)/(kh*h))+1;
                     double[,] array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.Blue, array);
@@ -179,7 +185,7 @@ namespace Task1
                     label2.ForeColor = Color.Blue;
                     //отрисовалась линия с шагом h
                     kh = 2;
-                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    strings = (int)(Math.Abs(xn - x) / (kh * h))+1;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.Red, array);
@@ -187,7 +193,7 @@ namespace Task1
                     label3.ForeColor = Color.Red;
                     //отрисовалась линия с шагом 2h
                     kh = 0.5;
-                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    strings = (int)(Math.Abs(xn - x) / (kh * h))+1;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 1);
                     DrawFunc(Color.LightGreen, array);
@@ -211,18 +217,18 @@ namespace Task1
                     }
                     label1.Text = "1) y1'=arctg(x^2+y2^2); 2) y2'=in(x+y1)";
                     x = 0;
-                    y = 1.5;
+                    y = 0.5;
                     xn = 2;
                     h = 0.1;
                     kh = 1;
-                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    strings = (int)(Math.Abs(xn - x) / (kh * h))+1;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 2);
                     DrawFunc(Color.Blue, array);
                     label2.Text = "1)h=0.1";
                     label2.ForeColor = Color.Blue;
                     //отрисовалась линия первого графика с шагом h
-                    y = 0.5;
+                    y = 1.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.Orange, array);
@@ -230,15 +236,15 @@ namespace Task1
                     label5.ForeColor = Color.Orange;
                     //отрисовалась линия второго графика с шагом h
                     kh = 2;
-                    y = 1.5;
-                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    y = 0.5;
+                    strings = (int)(Math.Abs(xn - x) / (kh * h))+1;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 2);
                     DrawFunc(Color.Red, array);
                     label3.Text = "1)h=0.2";
                     label3.ForeColor = Color.Red;
                     //отрисовалась линия первого графика с шагом 2h
-                    y = 0.5;
+                    y = 1.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.DarkSlateBlue, array);
@@ -246,15 +252,15 @@ namespace Task1
                     label6.ForeColor = Color.DarkSlateBlue;
                     //отрисовалась линия второго графика с шагом 2h
                     kh = 0.5;
-                    y = 1.5;
-                    strings = (int)(Math.Abs(xn - x) / (kh * h));
+                    y = 0.5;
+                    strings = (int)(Math.Abs(xn - x) / (kh * h))+1;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 2);
                     DrawFunc(Color.LightGreen, array);
                     label4.Text = "2)h=0.05";
                     label4.ForeColor = Color.LightGreen; ;
                     //отрисовалась линия первого графика с шагом 0.5h
-                    y = 0.5;
+                    y = 1.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.HotPink, array);
@@ -277,7 +283,7 @@ namespace Task1
                     double x1 = 0, xEnd = 3;
                     double ya = 0, ya1 = 1, ky1, ky2, ky3, ky4, dy;
                     x = x1;
-                    y = ya1;
+                    y = ya;
                     h = 0.05;
                     strings = (int)(Math.Abs(xEnd - x) / h);
                     array = new double[strings+1, 2];
@@ -291,7 +297,7 @@ namespace Task1
                         dy = (ky1 + 2 * ky2 + 2 * ky3 + ky4) / 6;
                         y += dy;
                         array[i, 0] = x;
-                        array[i, 1] = y;
+                        array[i, 1] = -y;
                         if (dataGridView1.Columns.Count == 3)
                             dataGridView1.Rows.Add(x, y, h);
                         x += h;
