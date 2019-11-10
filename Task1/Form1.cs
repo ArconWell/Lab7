@@ -33,7 +33,7 @@ namespace Task1
         int b = 3;
         double dx = 0.5;
         int fmin = -3;//интервал по Y; fmin и fmax должно нацело делится на dy:
-        int fmax = 3;
+        int fmax = 2;//тут какая-то ошибка и при fmin=-3 fmax=2 на графике минимальная координата y -2, а максимальная 3 (т.е. меняются наоборот) 
         double dy = 0.5;
 
         private double f(double x, double y, int p)
@@ -49,23 +49,6 @@ namespace Task1
                 default:
                     return 0;
             }
-        }
-
-        private double[,] CalculateNeopKoef(double[,] array)
-        {
-            int n = 2;
-            int y;
-            int x;
-            int a1 = -4;
-            int a2;
-            int x0 = 0;
-            //do
-            //{
-            //    y= n * (n - 1) * y * x + a1 * x * n * y * x0 + a2 * x * y * x;
-            //    x0 = x;
-            //}
-            //while ()
-            return array;
         }
 
         private double[,] CalculateRungeKutte(double x, double y, double xn, double h, double kh, double[,] array, int p)
@@ -173,6 +156,9 @@ namespace Task1
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
+                    label2.Visible = true;
+                    label3.Visible = true;
+                    label4.Visible = true;
                     label5.Visible = false;
                     label6.Visible = false;
                     label7.Visible = false;
@@ -210,6 +196,9 @@ namespace Task1
                     //отрисовалась линия с шагом 0.5h
                     break;
                 case 1:
+                    label2.Visible = true;
+                    label3.Visible = true;
+                    label4.Visible = true;
                     label5.Visible = true;
                     label6.Visible = true;
                     label7.Visible = true;
@@ -233,6 +222,7 @@ namespace Task1
                     label2.Text = "1)h=0.1";
                     label2.ForeColor = Color.Blue;
                     //отрисовалась линия первого графика с шагом h
+                    y = 0.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.Orange, array);
@@ -240,6 +230,7 @@ namespace Task1
                     label5.ForeColor = Color.Orange;
                     //отрисовалась линия второго графика с шагом h
                     kh = 2;
+                    y = 1.5;
                     strings = (int)(Math.Abs(xn - x) / (kh * h));
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 2);
@@ -247,6 +238,7 @@ namespace Task1
                     label3.Text = "1)h=0.2";
                     label3.ForeColor = Color.Red;
                     //отрисовалась линия первого графика с шагом 2h
+                    y = 0.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.DarkSlateBlue, array);
@@ -254,6 +246,7 @@ namespace Task1
                     label6.ForeColor = Color.DarkSlateBlue;
                     //отрисовалась линия второго графика с шагом 2h
                     kh = 0.5;
+                    y = 1.5;
                     strings = (int)(Math.Abs(xn - x) / (kh * h));
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 2);
@@ -261,6 +254,7 @@ namespace Task1
                     label4.Text = "2)h=0.05";
                     label4.ForeColor = Color.LightGreen; ;
                     //отрисовалась линия первого графика с шагом 0.5h
+                    y = 0.5;
                     array = new double[strings, 2];
                     CalculateRungeKutte(x, y, xn, h, kh, array, 3);
                     DrawFunc(Color.HotPink, array);
@@ -279,8 +273,8 @@ namespace Task1
                     label1.Text = "y''+a1*y'+a2*y=0";
                     if (dataGridView1.Columns.Count >= 4)
                         dataGridView1.Columns.RemoveAt(0);
-                    double a = 1, b = 1, c = 1;
-                    double x1 = -3, xEnd = 3;
+                    double a = 0, b = -4, c = 4;
+                    double x1 = 0, xEnd = 3;
                     double ya = 0, ya1 = 1, ky1, ky2, ky3, ky4, dy;
                     x = x1;
                     y = ya1;
